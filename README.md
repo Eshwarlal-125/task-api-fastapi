@@ -121,34 +121,26 @@ This query returns all tasks stored in the SQLite database.
 
 ## Database Screenshot
 
-Add your DB Browser screenshot here.
-
-Example:
-
-```
-screenshots/database.png
-```
-
-```markdown
 ![Database Screenshot](screenshots/database.png)
-```
 
 ---
 
 ## Project Structure
 
-```
+```text
 TaskAPI/
-│── main.py
-│── tasks.db
-│── requirements.txt
-│── README.md
-│── .gitignore
+├── main.py
+├── tasks.db
+├── requirements.txt
+├── README.md
+├── .gitignore
+└── screenshots/
+    └── database.png
 ```
 
 ---
 
 ## Author
 
-**Eshwar Lal**
+**Eshwar Lal**  
 Backend Development Intern
