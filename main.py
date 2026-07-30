@@ -1,7 +1,13 @@
+import sqlite3
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
+def get_db_connection():
+    conn = sqlite3.connect("tasks.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
 class TaskCreate(BaseModel):
     title: str
 class TaskUpdate(BaseModel):
@@ -44,18 +50,33 @@ def health():
 
 @app.get("/tasks")
 def get_tasks():
-    return tasks
 
+    conn = get_db_connection()
+
+    rows = conn.execute("SELECT * FROM tasks").fetchall()
+
+    conn.close()
+
+    return [dict(row) for row in rows]
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
-    for task in tasks:
-        if task["id"] == task_id:
-            return task
+
+    conn = get_db_connection()
+
+    row = conn.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (task_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if row:
+        return dict(row)
 
     raise HTTPException(
         status_code=404,
         detail=f"Task {task_id} not found"
-    )   
+    )
 @app.post("/tasks", status_code=201)
 def create_task(task: TaskCreate):
 
