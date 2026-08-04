@@ -119,6 +119,11 @@ def get_task(task_id: int):
 @app.post("/tasks", status_code=201)
 def create_task(task: TaskCreate):
 
+    if not task.title.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Title cannot be empty"
+    )
     conn = get_db_connection()
 
     cursor = conn.execute(
@@ -140,6 +145,11 @@ def create_task(task: TaskCreate):
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int, updated_task: TaskUpdate):
 
+    if not updated_task.title.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Title cannot be empty"
+    )
     conn = get_db_connection()
 
     cursor = conn.execute(
