@@ -20,6 +20,8 @@ def get_db_connection():
 
 def initialize_database():
 
+    print("Initializing database...")
+
     conn = get_db_connection()
 
     conn.execute("""
@@ -29,6 +31,8 @@ def initialize_database():
             done BOOLEAN NOT NULL DEFAULT FALSE
         )
     """)
+
+    print("Table created")
 
     cursor = conn.execute("SELECT COUNT(*) FROM tasks")
     count = cursor.fetchone()[0]
@@ -47,7 +51,10 @@ def initialize_database():
         )
 
     conn.commit()
-    conn.close()    
+
+    print("Database initialized")
+
+    conn.close()
 class TaskCreate(BaseModel):
     title: str
 class TaskUpdate(BaseModel):
