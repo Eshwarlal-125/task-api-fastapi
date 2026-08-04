@@ -138,6 +138,12 @@ TaskAPI/
     └── database.png
 ```
 
+## Run PostgreSQL Container
+
+```bash
+docker run --name task-postgres -e POSTGRES_USER=taskuser -e POSTGRES_PASSWORD=taskpass -e POSTGRES_DB=taskdb -p 5432:5432 -d postgres:17
+```
+
 ---
 
 ## Author
