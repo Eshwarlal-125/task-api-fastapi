@@ -3,7 +3,7 @@ import psycopg
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-
+from fastapi import Response
 load_dotenv()
 app = FastAPI()
 @app.on_event("startup")
@@ -191,18 +191,17 @@ def update_task(task_id: int, updated_task: TaskUpdate):
     "title": row[1],
     "done": row[2]
 }
-@app.delete("/tasks/{task_id}")
+@app.delete("/tasks/{task_id}", status_code=204)
 def delete_task(task_id: int):
 
     conn = get_db_connection()
 
     cursor = conn.execute(
-    "DELETE FROM tasks WHERE id = %s",
-    (task_id,)
-)
+        "DELETE FROM tasks WHERE id = %s",
+        (task_id,)
+    )
 
     conn.commit()
-
     conn.close()
 
     if cursor.rowcount == 0:
@@ -211,6 +210,4 @@ def delete_task(task_id: int):
             detail=f"Task {task_id} not found"
         )
 
-    return {
-        "message": f"Task {task_id} deleted successfully"
-    }
+    return Response(status_code=204)

@@ -1,30 +1,31 @@
-# Task API with SQLite
+# Task API with PostgreSQL & Docker
 
-A simple REST API built with **FastAPI** and **SQLite** for managing tasks.  
-This project stores tasks in a SQLite database, so the data remains available even after restarting the server.
+A simple REST API built with **FastAPI**, **PostgreSQL**, and **Docker** for managing tasks.
 
----
-
-## Why SQLite?
-
-SQLite was chosen because:
-
-- It is lightweight and serverless.
-- No database server installation is required.
-- Stores all data in a single file.
-- Data persists after server restarts.
-- Perfect for beginner backend projects.
+The application uses PostgreSQL as the database and Docker Compose to create and manage the database container automatically.
 
 ---
 
+## Why PostgreSQL?
+
+- Open-source relational database
+- Reliable and scalable
+- Supports SQL standards
+- Works well with Docker
+- Suitable for production applications
+
+---
 ## Technologies Used
 
 - Python 3.10
 - FastAPI
-- SQLite
-- sqlite3
-- Uvicorn
+- PostgreSQL
+- Docker
+- Docker Compose
+- Psycopg
 - Pydantic
+- Python Dotenv
+- Uvicorn
 
 ---
 
@@ -35,7 +36,8 @@ SQLite was chosen because:
 - Get Task by ID
 - Update Task
 - Delete Task
-- SQLite Database Storage
+- PostgreSQL Database Storage
+- Docker Compose Support
 - Automatic Database Creation
 - Automatic Table Creation
 - Seed Initial Tasks
@@ -45,15 +47,16 @@ SQLite was chosen because:
 
 ## Database
 
-The application automatically creates
+Database configuration
 
+```text
+Database Name : taskdb
+User          : taskuser
+Container     : task-postgres
+Port          : 5432
 ```
-tasks.db
-```
 
-when the server starts if it does not already exist.
-
-No manual database setup is required.
+The database and tables are created automatically when the application starts.
 
 ---
 
@@ -68,7 +71,21 @@ git clone <repository-url>
 Move into the project
 
 ```bash
-cd task-api-fastapi
+cd TaskAPI
+```
+
+Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate the environment
+
+Windows
+
+```bash
+venv\Scripts\activate
 ```
 
 Install dependencies
@@ -77,14 +94,20 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Run the application
+Create a `.env` file using `.env.example`.
+
+Start PostgreSQL
+
+```bash
+docker compose up -d
+```
+
+Run the FastAPI server
 
 ```bash
 uvicorn main:app --reload
 ```
-
 ---
-
 ## Swagger UI
 
 Open
@@ -115,33 +138,39 @@ http://127.0.0.1:8000/docs
 SELECT * FROM tasks;
 ```
 
-This query returns all tasks stored in the SQLite database.
+This query returns all tasks stored in the PostgreSQL database.
 
 ---
 
-## Database Screenshot
-
-![Database Screenshot](screenshots/database.png)
-
----
 
 ## Project Structure
 
 ```text
 TaskAPI/
+│
 ├── main.py
-├── tasks.db
+├── docker-compose.yml
+├── .env.example
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
 └── screenshots/
-    └── database.png
 ```
+## Database Screenshot
 
-## Run PostgreSQL Container
+![PostgreSQL Database](screenshots/postgres-table.png)
+
+---
+## Start PostgreSQL
 
 ```bash
-docker run --name task-postgres -e POSTGRES_USER=taskuser -e POSTGRES_PASSWORD=taskpass -e POSTGRES_DB=taskdb -p 5432:5432 -d postgres:17
+docker compose up -d
+```
+
+Stop
+
+```bash
+docker compose down
 ```
 
 ---
