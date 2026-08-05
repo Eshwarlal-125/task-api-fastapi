@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi import Response
 from supabase import create_client, Client
+from fastapi import UploadFile, File
 
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -226,3 +227,19 @@ def delete_task(task_id: int):
         )
 
     return Response(status_code=204)    
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    file_bytes = await file.read()
+
+    supabase.storage.from_("uploads").upload(
+        file.filename,
+        file_bytes,
+        {"content-type": file.content_type}
+    )
+
+    public_url = supabase.storage.from_("uploads").get_public_url(file.filename)
+
+    return {
+        "filename": file.filename,
+        "url": public_url
+    }
