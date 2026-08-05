@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from fastapi import Response
 from supabase import create_client, Client
 from fastapi import UploadFile, File
+from fastapi import Depends, Header
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -254,6 +256,22 @@ def signup(user: UserSignup):
         "id": response.user.id,
         "email": response.user.email,
     }
+security = HTTPBearer()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    token = credentials.credentials
+
+    try:
+        response = supabase.auth.get_user(token)
+        return response.user
+
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
 @app.post("/auth/login")
 def login(user: UserLogin):
 
@@ -274,6 +292,26 @@ def login(user: UserLogin):
         "access_token": response.session.access_token,
         "token_type": "bearer"
     }
+@app.get("/protected/profile")
+def protected_profile(user = Depends(get_current_user)):
+
+    return {
+        "id": user.id,
+        "email": user.email
+    }
+@app.get("/protected/dashboard")
+def dashboard(user = Depends(get_current_user)):
+
+    return {
+        "message": "Welcome",
+        "email": user.email
+    }
+@app.post("/auth/logout", status_code=204)
+def logout():
+
+    supabase.auth.sign_out()
+
+    return Response(status_code=204)
    
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
