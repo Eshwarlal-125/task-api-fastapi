@@ -1,27 +1,33 @@
-# Task API with PostgreSQL & Docker
+# 🔐 Task API with Supabase Authentication
 
-A simple REST API built with **FastAPI**, **PostgreSQL**, and **Docker** for managing tasks.
+A secure REST API built with **FastAPI**, **PostgreSQL**, and **Supabase Authentication**.
 
-The application uses PostgreSQL as the database and Docker Compose to create and manage the database container automatically.
+This project demonstrates a complete authentication flow using **Supabase Auth**, including user signup, login, JWT verification, protected routes, logout, file upload, and interactive API documentation with Swagger UI.
+
+---
+
+# 🚀 Features
+
+- User Signup
+- User Login
+- JWT Authentication
+- Protected Routes
+- User Logout
+- CRUD Operations for Tasks
+- PostgreSQL Database
+- Supabase Authentication
+- Supabase Storage File Upload
+- Swagger UI with Bearer Authentication
+- Automatic Database Initialization
 
 ---
 
-## Why PostgreSQL?
+# 🛠️ Technologies Used
 
-- Open-source relational database
-- Reliable and scalable
-- Supports SQL standards
-- Works well with Docker
-- Suitable for production applications
-
----
-## Technologies Used
-
-- Python 3.10
+- Python 3.10+
 - FastAPI
 - PostgreSQL
-- Docker
-- Docker Compose
+- Supabase
 - Psycopg
 - Pydantic
 - Python Dotenv
@@ -29,38 +35,39 @@ The application uses PostgreSQL as the database and Docker Compose to create and
 
 ---
 
-## Features
-
-- Create Task
-- Get All Tasks
-- Get Task by ID
-- Update Task
-- Delete Task
-- PostgreSQL Database Storage
-- Docker Compose Support
-- Automatic Database Creation
-- Automatic Table Creation
-- Seed Initial Tasks
-- Swagger UI
-
----
-
-## Database
-
-Database configuration
+# 📂 Project Structure
 
 ```text
-Database Name : taskdb
-User          : taskuser
-Container     : task-postgres
-Port          : 5432
+TaskAPI/
+│
+├── main.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+├── README.md
+└── screenshots/
 ```
-
-The database and tables are created automatically when the application starts.
 
 ---
 
-## Installation
+# ⚙️ Environment Variables
+
+Create a `.env` file using `.env.example`
+
+```env
+DB_HOST=your_database_host
+DB_PORT=5432
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your_supabase_anon_key
+```
+
+---
+
+# 📦 Installation
 
 Clone the repository
 
@@ -74,13 +81,13 @@ Move into the project
 cd TaskAPI
 ```
 
-Create a virtual environment
+Create virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate the environment
+Activate
 
 Windows
 
@@ -94,21 +101,17 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Create a `.env` file using `.env.example`.
+---
 
-Start PostgreSQL
-
-```bash
-docker compose up -d
-```
-
-Run the FastAPI server
+# ▶️ Run the Application
 
 ```bash
 uvicorn main:app --reload
 ```
+
 ---
-## Swagger UI
+
+# 📖 Swagger Documentation
 
 Open
 
@@ -116,66 +119,54 @@ Open
 http://127.0.0.1:8000/docs
 ```
 
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | / | API Information |
-| GET | /health | Health Check |
-| GET | /tasks | Get All Tasks |
-| GET | /tasks/{task_id} | Get Task by ID |
-| POST | /tasks | Create Task |
-| PUT | /tasks/{task_id} | Update Task |
-| DELETE | /tasks/{task_id} | Delete Task |
+Authorize using the JWT access token obtained from `/auth/login`.
 
 ---
 
-## Example SQL Query
+# 🔗 API Endpoints
 
-```sql
-SELECT * FROM tasks;
+| Method | Endpoint | Authentication | Description |
+|---------|----------|----------------|-------------|
+| GET | / | ❌ | API Information |
+| GET | /health | ❌ | Health Check |
+| GET | /tasks | ❌ | Get All Tasks |
+| GET | /tasks/{task_id} | ❌ | Get Task by ID |
+| POST | /tasks | ❌ | Create Task |
+| PUT | /tasks/{task_id} | ❌ | Update Task |
+| DELETE | /tasks/{task_id} | ❌ | Delete Task |
+| POST | /auth/signup | ❌ | Register User |
+| POST | /auth/login | ❌ | Login User |
+| POST | /auth/logout | ✅ | Logout User |
+| GET | /protected/profile | ✅ | User Profile |
+| GET | /protected/dashboard | ✅ | Protected Dashboard |
+| POST | /upload | ❌ | Upload File to Supabase Storage |
+
+---
+
+# 🔐 Authentication Flow
+
+1. Register using `/auth/signup`
+2. Login using `/auth/login`
+3. Copy the access token
+4. Open Swagger UI
+5. Click **Authorize**
+6. Paste the JWT token
+7. Access protected routes
+
+---
+
+# 📸 Swagger Screenshot
+
+Add your Swagger UI screenshot here.
+
 ```
-
-This query returns all tasks stored in the PostgreSQL database.
-
----
-
-
-## Project Structure
-
-```text
-TaskAPI/
-│
-├── main.py
-├── docker-compose.yml
-├── .env.example
-├── requirements.txt
-├── README.md
-├── .gitignore
-└── screenshots/
-```
-## Database Screenshot
-
-![PostgreSQL Database](screenshots/postgres-table.png)
-
----
-## Start PostgreSQL
-
-```bash
-docker compose up -d
-```
-
-Stop
-
-```bash
-docker compose down
+screenshots/swagger-ui.png
 ```
 
 ---
 
-## Author
+# 👨‍💻 Author
 
-**Eshwar Lal**  
-Backend Development Intern
+**Eshwar Lal**
+
+Backend Development Intern  
