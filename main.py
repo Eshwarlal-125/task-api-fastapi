@@ -71,7 +71,14 @@ class TaskCreate(BaseModel):
 class TaskUpdate(BaseModel):
     title: str
     done: bool
+class UserSignup(BaseModel):
+    email: str
+    password: str
 
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 @app.get("/")
 def root():
     return {
@@ -226,7 +233,48 @@ def delete_task(task_id: int):
             detail=f"Task {task_id} not found"
         )
 
-    return Response(status_code=204)    
+    return Response(status_code=204) 
+@app.post("/auth/signup", status_code=201)
+def signup(user: UserSignup):
+
+    response = supabase.auth.sign_up(
+        {
+            "email": user.email,
+            "password": user.password,
+        }
+    )
+
+    if response.user is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Signup failed"
+        )
+
+    return {
+        "id": response.user.id,
+        "email": response.user.email,
+    }
+@app.post("/auth/login")
+def login(user: UserLogin):
+
+    response = supabase.auth.sign_in_with_password(
+        {
+            "email": user.email,
+            "password": user.password,
+        }
+    )
+
+    if response.user is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
+
+    return {
+        "access_token": response.session.access_token,
+        "token_type": "bearer"
+    }
+   
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_bytes = await file.read()
@@ -243,3 +291,4 @@ async def upload_file(file: UploadFile = File(...)):
         "filename": file.filename,
         "url": public_url
     }
+
