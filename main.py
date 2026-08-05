@@ -18,6 +18,7 @@ supabase: Client = create_client(
     SUPABASE_KEY
 )
 app = FastAPI()
+security = HTTPBearer()
 @app.on_event("startup")
 def startup():
     initialize_database()
@@ -256,7 +257,6 @@ def signup(user: UserSignup):
         "id": response.user.id,
         "email": response.user.email,
     }
-security = HTTPBearer()
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
