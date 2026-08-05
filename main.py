@@ -4,7 +4,16 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi import Response
+from supabase import create_client, Client
+
 load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase: Client = create_client(
+    SUPABASE_URL,
+    SUPABASE_KEY
+)
 app = FastAPI()
 @app.on_event("startup")
 def startup():
@@ -76,6 +85,11 @@ def root():
 def health():
     return {
         "status": "ok"
+    }
+@app.get("/supabase-test")
+def supabase_test():
+    return {
+        "message": "Supabase client connected"
     }
 
 @app.get("/tasks")
@@ -210,4 +224,4 @@ def delete_task(task_id: int):
             detail=f"Task {task_id} not found"
         )
 
-    return Response(status_code=204)
+    return Response(status_code=204)    
